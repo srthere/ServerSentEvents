@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE Client</title>
+</head>
+<body>
+<h1>Server-Sent Events (SSE) Demo</h1>
+<div id="timeContainer">Waiting for server time...</div>
+
+<script>
+    const eventSource = new EventSource("/stream-sse");
+
+    eventSource.onopen = function() {
+        document.getElementById("timeContainer").innerHTML = ""; // Clear initial message
+    };
+
+    eventSource.onmessage = function(event) {
+        const timeContainer = document.getElementById("timeContainer");
+        const newTimeElement = document.createElement("div"); // Create a new div for each message
+        newTimeElement.textContent = event.data;
+        timeContainer.appendChild(newTimeElement); // Append the new message to the container
+    };
+
+    eventSource.onerror = function() {
+        const timeContainer = document.getElementById("timeContainer");
+        const errorElement = document.createElement("div");
+        errorElement.textContent = "Connection Closed";
+        timeContainer.appendChild(errorElement);
+        eventSource.close();
+    };
+</script>
+</body>
+</html>
